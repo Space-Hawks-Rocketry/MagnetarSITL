@@ -1,0 +1,3 @@
+IPC_port = 5400  # Defines port for computer<->env communication. Cannot conflict with another process.
+target_dt = 0.001 # Integration time step for the environment. Actual time step will be lower if flight computer runs faster.
+sim_stop_time = 60.0 # Time (in simulated seconds) to stop the simulation. If <= 0, simulation will run until manually stopped.
