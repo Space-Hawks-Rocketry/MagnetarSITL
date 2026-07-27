@@ -2,7 +2,9 @@ from framework.core.SITL_handle import SITLHandle
 ## ------------------------------------------
 ## Entry point to the user-defined environment simulation.
 ## ------------------------------------------
+from .models.magnetar_rocket import MagnetarRocket
 
+rocket = MagnetarRocket()
 
 def SITL_setup(sitl: SITLHandle):
   '''Called before starting simulation. Use this to schedule events.'''
