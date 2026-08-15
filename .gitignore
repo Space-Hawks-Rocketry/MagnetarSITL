@@ -1,1 +1,6 @@
 flight-computer/build
+
+__pycache__/
+*.pyc
+environment/flight_logs/*
+!environment/flight_logs/.gitkeep

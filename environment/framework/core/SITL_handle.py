@@ -7,6 +7,8 @@ class SITLHandle:
         self.dt = dt
         
         self._scheduled_delegates = []
+
+        self.packet_stream = None
       
     def stop(self):
         '''Call this to stop the simulation.'''
