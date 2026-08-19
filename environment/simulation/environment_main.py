@@ -34,7 +34,7 @@ def SITL_setup(sitl: SITLHandle):
   sitl.t_to_next_adxl375   = ADXL375_SAMPLE_PERIOD_MS  
   sitl.t_to_next_bmm150    = BMM150_SAMPLE_PERIOD_MS   
   sitl.t_to_next_bmp390    = BMP390_SAMPLE_PERIOD_MS   
-  sitl.t_to_next_bmp585    = BMP585_SAMPLE_PERIOD_MS         
+  sitl.t_to_next_bmp585    = BMP585_SAMPLE_PERIOD_MS  
 
   pass
 
@@ -107,6 +107,51 @@ def SITL_createSensorData(sitl: SITLHandle) -> dict:
   
   return data
 
+  
+def SITL_finish(sitl: SITLHandle):
+  '''Called immediately before stopping the simulation.'''
+  pass
+
+
+
+
+class SupernovaModel:
+
+  def __init__(self):
+    '''Read all needed data from csv and find initial time'''
+    self.t = 0 # change this to initial time on first row of csv
+    self.current_readings = {} # same format as packet
+
+  def update(dt):
+    '''Progress supernova model forward in time by dt'''
+    self.t += dt
+    # get last row data and next row data (as packets), then interpolate between them at this current time
+    self.current_raw_sensor_data = 0 # bla bla
+    # for each sensor, determine if it is time to read. If time to read, update their respective value in self.current_readings 
+
+  def getSensorReadings():
+    # return self.current_readings
+    # only return new sensor readings
+    pass
+
+
+def SITL_setup(sitl: SITLHandle):
+  '''Called before starting simulation. Use this to schedule events.'''
+  pass
+
+def SITL_physicsUpdate(sitl: SITLHandle, t: float, dt: float):
+  '''Called at each time step. Use this to integrate models forward in time.'''
+  pass
+
+def SITL_controlUpdate(sitl: SITLHandle, control_msg: dict):
+  '''Called when a control message is received from the simulated flight computer. 
+    The control_msg contents is defined by flight_main.cpp.'''
+  pass
+
+def SITL_createSensorData(sitl: SITLHandle) -> dict:
+  '''Must return sensor data to be parsed by the simulated flight computer.
+    Returned dict structure is defined here and utilized by flight_main.cpp.'''
+  return {}
   
 def SITL_finish(sitl: SITLHandle):
   '''Called immediately before stopping the simulation.'''
