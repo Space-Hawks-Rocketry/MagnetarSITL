@@ -3,10 +3,8 @@ from framework.core.SITL_handle import SITLHandle
 ## Entry point to the user-defined environment simulation.
 ## ------------------------------------------
 from .models.magnetar_rocket import MagnetarRocket
-from .models.falling_cube import FallingCube
 
 rocket = MagnetarRocket()
-cube = FallingCube(100)
 
 def SITL_setup(sitl: SITLHandle):
   '''Called before starting simulation. Use this to schedule events.'''
@@ -14,7 +12,7 @@ def SITL_setup(sitl: SITLHandle):
 
 def SITL_physicsUpdate(sitl: SITLHandle, t: float, dt: float):
   '''Called at each time step. Use this to integrate models forward in time.'''
-  cube.update(dt)
+  rocket.update(t)
 
 def SITL_controlUpdate(sitl: SITLHandle, control_msg: dict):
   '''Called when a control message is received from the simulated flight computer. 
@@ -24,8 +22,8 @@ def SITL_controlUpdate(sitl: SITLHandle, control_msg: dict):
 def SITL_createSensorData(sitl: SITLHandle) -> dict:
   '''Must return sensor data to be parsed by the simulated flight computer.
     Returned dict structure is defined here and utilized by flight_main.cpp.'''
-  return {}
-  
+  return rocket.measure()
+
 def SITL_finish(sitl: SITLHandle):
   '''Called immediately before stopping the simulation.'''
   pass

@@ -2,3 +2,4 @@ numpy
 zmq
 rocketpy
 matplotlib
+ppigrf
