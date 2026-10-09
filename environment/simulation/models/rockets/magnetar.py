@@ -1,9 +1,9 @@
 
 
 from rocketpy import Flight
-from rockets.first_rocket import rocket
-from environments.env import env
-from flights.test_flight import test_flight
+from . import vehicle
+from ..environments.env import env
+from ..flights.test_flight import test_flight
 
 from bisect import bisect_left
 
@@ -32,16 +32,16 @@ class MagnetarRocket:
         self.t = t
         
     def measure(self):
-        bmi323_a = _nearest_reading(rocket.bmi323_accel, self.t)
-        bmi323_g = _nearest_reading(rocket.bmi323_gyro, self.t)
-        lsm_a = _nearest_reading(rocket.lsm6dso32_accel, self.t)
-        lsm_g = _nearest_reading(rocket.lsm6dso32_gyro, self.t)
-        adxl_a = _nearest_reading(rocket.adxl375_accel, self.t)
-        bmm_m = _nearest_reading(rocket.bmm150_mag, self.t)
-        rm_m = _nearest_reading(rocket.rm3100_mag, self.t)
-        bmp390_b = _nearest_reading(rocket.bmp390_baro, self.t)
-        bmp581_b = _nearest_reading(rocket.bmp581_baro, self.t)
-        max_gnss = _nearest_reading(rocket.max_f10s_gnss, self.t)
+        bmi323_a = _nearest_reading(vehicle.bmi323_accel, self.t)
+        bmi323_g = _nearest_reading(vehicle.bmi323_gyro, self.t)
+        lsm_a    = _nearest_reading(vehicle.lsm6dso32_accel, self.t)
+        lsm_g    = _nearest_reading(vehicle.lsm6dso32_gyro, self.t)
+        adxl_a   = _nearest_reading(vehicle.adxl375_accel, self.t)
+        bmm_m    = _nearest_reading(vehicle.bmm150_mag, self.t)
+        rm_m     = _nearest_reading(vehicle.rm3100_mag, self.t)
+        bmp390_b = _nearest_reading(vehicle.bmp390_baro, self.t)
+        bmp581_b = _nearest_reading(vehicle.bmp581_baro, self.t)
+        max_gnss = _nearest_reading(vehicle.max_f10s_gnss, self.t)
 
         def vec3(row):
             if row is None:

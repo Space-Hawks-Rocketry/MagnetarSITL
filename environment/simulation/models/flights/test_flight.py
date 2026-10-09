@@ -1,7 +1,7 @@
 
 from rocketpy import Flight
-from rockets.first_rocket import rocket
-from environments.env import env
+from ..rockets.vehicle import rocket
+from ..environments.env import env
 
 test_flight = Flight(
     rocket=rocket,

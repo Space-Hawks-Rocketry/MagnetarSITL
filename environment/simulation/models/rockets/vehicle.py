@@ -1,7 +1,7 @@
 
 from rocketpy import Rocket
-from motors.l1090w import l1090w
-from sensors.sensors import *       # need to change name of sensors.py
+from ..motors.l1090w import l1090w
+from ..sensors.sensors import *       # need to change name of sensors.py
 
 
 # Geometry sized (see module docstring) so the dry CP-CG separation is 0.20 m.
@@ -48,3 +48,5 @@ for sensor in [
     max_f10s_gnss
 ]:
     rocket.add_sensor(sensor, AV_BAY_POSITION)
+    
+

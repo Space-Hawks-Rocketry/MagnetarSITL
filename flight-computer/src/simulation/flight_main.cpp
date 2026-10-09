@@ -51,7 +51,7 @@ ControlStep loop(json sensor_data) {
     // estimate state
 
     // make decisions
-    control_msg["deploy_parachute"] = true;
+    // control_msg["deploy_parachute"] = true;
 
 
     // output commands

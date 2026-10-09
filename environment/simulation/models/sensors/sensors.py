@@ -5,8 +5,8 @@
 import numpy as np
 
 from rocketpy import Accelerometer, Gyroscope, Barometer, GnssReceiver
-from magnetometer import Magnetometer
-from environments.env import env
+from .magnetometer import Magnetometer
+from ..environments.env import env
 
 # Magic Number
 G0 = 9.80665
