@@ -58,7 +58,8 @@ env = Environment(
     elevation=LAUNCH_ELEVATION,
 )
 env.set_date(launch_date, timezone="UTC")
-env.set_atmospheric_model(type="standard_atmosphere")  # swap for "Forecast"/"Reanalysis" if desired
+# env.set_atmospheric_model(type="standard_atmosphere")  # swap for "Forecast"/"Reanalysis" if desired
+env.set_atmospheric_model(type="forecast", file="GFS")  # swap for "Forecast"/"Reanalysis" if desired
 
 
 # ============================================================================

@@ -5,6 +5,14 @@
 ##
 ##################################################################
 
+# Deal with warning from rocketpy that sensors are under development; we know :)
+import warnings
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"The Sensor class \(and all its subclasses\) is still under experimental development.*"
+)
+
 from simulation.environment_main import SITL_controlUpdate, SITL_physicsUpdate, SITL_createSensorData, SITL_finish, SITL_setup
 from framework.core.IPC_computer import IPC_Computer
 from framework.core.SITL_handle import SITLHandle
@@ -25,7 +33,7 @@ target_dt = sim_config.get("target_dt", 0.01)  # If a computer control step is q
 running = True
 t = 0
 
-# Create a handle for SITL state to be contorlled by user-defined functions
+# Create a handle for SITL state to be controlled by user-defined functions
 sitl_handle = SITLHandle(
   stop_delegate=lambda: globals().update(running=False)
 )

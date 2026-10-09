@@ -7,6 +7,14 @@
 
 const float LOOP_DT = 0.01;
 
+
+// Keaton 10/08/26
+#include <fstream>
+static std::ofstream log_file("altitude_log.csv");
+static float t = 0.0f;
+
+
+
 ControlStep setup(json sensor_data) {
     return {.control_msg = {}, .execution_time = 0.01};
 }
@@ -14,7 +22,38 @@ ControlStep setup(json sensor_data) {
 ControlStep loop(json sensor_data) {
     json control_msg = {};
 
-    // ex. float P = sensor_data["bmp390"]["baro"];
+    // read sensors
 
+    // ex. float P = sensor_data["bmp390"]["baro"];
+    float P = sensor_data["bmp390"]["baro"];
+    static bool initialized = false;
+    static float P0;
+
+    if (!initialized)
+    {
+        P0 = P;
+        initialized = true;
+    }
+
+    float h = 44330.0f *
+            (1.0f - pow(P / P0, 0.1903f));
+
+
+    log_file << t
+         << ","
+         << P
+         << ","
+         << h
+         << "\n";
+
+    t += LOOP_DT;
+    
+    // estimate state
+
+    // make decisions
+    control_msg["deploy_parachute"] = true;
+
+
+    // output commands
     return {.control_msg = control_msg, .execution_time = LOOP_DT};
 }
