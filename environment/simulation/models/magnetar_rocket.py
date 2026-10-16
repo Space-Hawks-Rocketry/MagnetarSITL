@@ -548,7 +548,7 @@ class MagnetarRocket:
                 return {"baro": None}
             pressure = row[1]
             return {"baro": pressure}
-
+            
         return {
             "timestamp": self.t,
             "gnss": {
