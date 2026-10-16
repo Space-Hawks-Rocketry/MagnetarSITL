@@ -2,12 +2,9 @@ from framework.core.SITL_handle import SITLHandle
 ## ------------------------------------------
 ## Entry point to the user-defined environment simulation.
 ## ------------------------------------------
-from .models.rockets.magnetar import MagnetarRocket
-
 import numpy as np
 import matplotlib.pyplot as plt
 
-rocket = MagnetarRocket()
 from .models.magnetar.magnetar_model import MagnetarModel
 magnetar = MagnetarModel()
 
@@ -27,10 +24,6 @@ def SITL_setup(sitl: SITLHandle):
 def SITL_physicsUpdate(sitl: SITLHandle, t: float, dt: float):
   '''Called at each time step. Use this to integrate models forward in time.'''
   magnetar.update(t)
-  
-  # write to truth_log
-  altitude = magnetar.flight.z(t)
-  truth_log.write(f"{t},{altitude}\n")
 
 def SITL_controlUpdate(sitl: SITLHandle, control_msg: dict):
   '''Called when a control message is received from the simulated flight computer. 
@@ -66,10 +59,7 @@ def SITL_finish(sitl: SITLHandle):
   '''Called immediately before stopping the simulation.'''
   print("STATUS: Finished SITL simulation.")
   
-  plt
   plt.plot(reported_t, reported_att_x, 'r*')
   plt.show()
   
   magnetar.flight.altitude()
-  # close truth_log
-  truth_log.close()
