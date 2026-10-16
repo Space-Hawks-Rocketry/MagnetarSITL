@@ -1,5 +1,4 @@
-
-from datetime import datetime, timezone
+from datetime import datetime
 from rocketpy import Environment
 
 LAUNCH_LAT = 29.232838813115663
@@ -15,5 +14,7 @@ env = Environment(
     elevation=LAUNCH_ELEVATION,
 )
 env.set_date(launch_date, timezone="UTC")
-# env.set_atmospheric_model(type="standard_atmosphere")  # swap for "Forecast"/"Reanalysis" if desired
-env.set_atmospheric_model(type="forecast", file="GFS")  # swap for "Forecast"/"Reanalysis" if desired
+env.set_atmospheric_model(type="standard_atmosphere")  # swap for "Forecast"/"Reanalysis" if desired
+
+# NOTE: This one gives 0 below 100m (NOT GOOD)
+# env.set_atmospheric_model(type="forecast", file="GFS")  # swap for "Forecast"/"Reanalysis" if desired

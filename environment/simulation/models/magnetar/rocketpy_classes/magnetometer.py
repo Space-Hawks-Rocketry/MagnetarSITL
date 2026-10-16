@@ -6,6 +6,20 @@ from rocketpy.sensors.sensor import InertialSensor
 from rocketpy.prints.sensors_prints import _InertialSensorPrints
 from rocketpy.mathutils.vector_matrix import Matrix, Vector
 
+class GeomagneticData:
+    
+    def __init__(self,
+                 field_enu_nT,
+                 B_inertial,
+                 total_field_nT,
+                 declination_deg,
+                 inclination_deg):
+        self.field_enu_nT = field_enu_nT
+        self.B_inertial = B_inertial
+        self.total_field_nT = total_field_nT
+        self.declination_deg = declination_deg
+        self.inclination_deg = inclination_deg
+
 # ============================================================================
 # CUSTOM MAGNETOMETER SENSOR (IGRF-14 via ppigrf)
 # ============================================================================
@@ -54,10 +68,7 @@ class Magnetometer(InertialSensor):
     def __init__(
         self,
         sampling_rate,
-        latitude,
-        longitude,
-        elevation,
-        date,
+        geomagnetic_data: GeomagneticData,
         orientation=(0, 0, 0),
         measurement_range=np.inf,
         resolution=0,
@@ -70,6 +81,8 @@ class Magnetometer(InertialSensor):
         temperature_bias=0,
         temperature_scale_factor=0,
         cross_axis_sensitivity=0,
+        soft_iron_matrix=np.identity(3),
+        hard_iron_bias=np.zeros((3,1)),
         name="Magnetometer",
         seed=None,
     ):
@@ -91,21 +104,41 @@ class Magnetometer(InertialSensor):
             seed=seed,
         )
         self.prints = _InertialSensorPrints(self)
-
+        
+        self.soft_iron_matrix = soft_iron_matrix
+        self.hard_iron_bias = hard_iron_bias
+        
+        self.field_enu_nT = geomagnetic_data.field_enu_nT
+        self._B_inertial = geomagnetic_data.B_inertial
+        self.total_field_nT = geomagnetic_data.total_field_nT
+        self.declination_deg = geomagnetic_data.declination_deg
+        self.inclination_deg = geomagnetic_data.inclination_deg
+        
+    @staticmethod
+    def computeGeomagneticData(elevation,
+                               longitude,
+                               latitude,
+                               date) -> GeomagneticData:
         # --- Evaluate IGRF-14 once at the launch site and cache it (ENU, Tesla) ---
         h_km = elevation / 1000.0
         Be, Bn, Bu = ppigrf.igrf(longitude, latitude, h_km, date)
         Be, Bn, Bu = float(np.asarray(Be).squeeze()), float(np.asarray(Bn).squeeze()), float(np.asarray(Bu).squeeze())
-        self.field_enu_nT = (Be, Bn, Bu)  # stashed for printing/verification
-        self._B_inertial = Vector([Be, Bn, Bu]) * 1e-9  # nT -> T
+        field_enu_nT = (Be, Bn, Bu)  # stashed for printing/verification
+        B_inertial = Vector([Be, Bn, Bu]) * 1e-9  # nT -> T
 
         # Handy derived quantities for a sanity-check printout against NOAA's
         # online calculator (https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml)
         F = np.sqrt(Be**2 + Bn**2 + Bu**2)
         H = np.sqrt(Be**2 + Bn**2)
-        self.total_field_nT = F
-        self.declination_deg = np.degrees(np.arctan2(Be, Bn))
-        self.inclination_deg = np.degrees(np.arctan2(Bu, H))
+        total_field_nT = F
+        declination_deg = np.degrees(np.arctan2(Be, Bn))
+        inclination_deg = np.degrees(np.arctan2(Bu, H))
+        
+        return GeomagneticData(field_enu_nT,
+                               B_inertial,
+                               total_field_nT,
+                               declination_deg,
+                               inclination_deg)
 
     def measure(self, time, **kwargs):
         u = kwargs["u"]
@@ -132,4 +165,4 @@ class Magnetometer(InertialSensor):
 
     @classmethod
     def from_dict(cls, data):
-        raise NotImplementedError("from_dict not implemented for this example Magnetometer")
+        raise NotImplementedError("from_dict not implemented for this Magnetometer implementation.")

@@ -1,13 +1,17 @@
-
 from rocketpy import Rocket
-from ..motors.l1090w import l1090w
-from ..sensors.sensors import *       # need to change name of sensors.py
 
+from .L1090W_motor import l1090w
+from .sensors.accelerometers import *
+from .sensors.gyroscopes import *
+from .sensors.barometers import *
+from .sensors.magnetometers import *
+from .sensors.gnss_receivers import *
 
 # Geometry sized (see module docstring) so the dry CP-CG separation is 0.20 m.
 # Coordinate origin = dry (no-motor) center of mass, "tail_to_nose" orientation.
 BODY_RADIUS = 0.0508       # m (4 in airframe)
 TOTAL_LENGTH = 2.88        # m
+AV_BAY_POSITION = 0.3      # Distance of dry bay from CG
 
 rocket = Rocket(
     radius=BODY_RADIUS,
@@ -39,14 +43,15 @@ rail_buttons = rocket.set_rail_buttons(
     angular_position=45,
 )
 
-for sensor in [
-    bmi323_accel, bmi323_gyro,
-    lsm6dso32_accel, lsm6dso32_gyro,
-    adxl375_accel,
-    bmp581_baro, bmp390_baro,
-    rm3100_mag, bmm150_mag,
-    max_f10s_gnss
-]:
+sensors = [
+    bmi323_accel, lsm6dso32_accel, adxl375_accel, truth_accel,
+    bmi323_gyro, lsm6dso32_gyro, truth_gyro,
+    bmp581_baro, bmp390_baro, truth_baro,
+    rm3100_mag, bmm150_mag, truth_mag,
+    max_f10s_gnss, truth_gnss
+]
+
+for sensor in sensors:
     rocket.add_sensor(sensor, AV_BAY_POSITION)
     
 

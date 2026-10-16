@@ -1,9 +1,6 @@
-
-
+from .rocketpy_definitions import magnetar_rocket as rocket
+from .rocketpy_definitions.environment import env
 from rocketpy import Flight
-from . import vehicle
-from ..environments.env import env
-from ..flights.test_flight import test_flight
 
 from bisect import bisect_left
 
@@ -22,26 +19,39 @@ def _nearest_reading(sensor, t):
     return before if (t - before[0]) <= (after[0] - t) else after
 
 
-class MagnetarRocket:
+class MagnetarModel:
 
     def __init__(self, t0=0.0):
         self.t = t0
-        self.test_flight = test_flight
+        print("\nSTATUS: Simulating RocketPy flight...")
+        self.flight = Flight(
+            rocket=rocket.rocket,
+            environment=env,
+            rail_length=5.2,
+            inclination=85,
+            heading=0,
+        )
+        print("STATUS: Finished RocketPy flight simulation.")
         
     def update(self, t: float):
         self.t = t
         
     def measure(self):
-        bmi323_a = _nearest_reading(vehicle.bmi323_accel, self.t)
-        bmi323_g = _nearest_reading(vehicle.bmi323_gyro, self.t)
-        lsm_a    = _nearest_reading(vehicle.lsm6dso32_accel, self.t)
-        lsm_g    = _nearest_reading(vehicle.lsm6dso32_gyro, self.t)
-        adxl_a   = _nearest_reading(vehicle.adxl375_accel, self.t)
-        bmm_m    = _nearest_reading(vehicle.bmm150_mag, self.t)
-        rm_m     = _nearest_reading(vehicle.rm3100_mag, self.t)
-        bmp390_b = _nearest_reading(vehicle.bmp390_baro, self.t)
-        bmp581_b = _nearest_reading(vehicle.bmp581_baro, self.t)
-        max_gnss = _nearest_reading(vehicle.max_f10s_gnss, self.t)
+        bmi323_a   = _nearest_reading(rocket.bmi323_accel, self.t)
+        bmi323_g   = _nearest_reading(rocket.bmi323_gyro, self.t)
+        lsm_a      = _nearest_reading(rocket.lsm6dso32_accel, self.t)
+        lsm_g      = _nearest_reading(rocket.lsm6dso32_gyro, self.t)
+        adxl_a     = _nearest_reading(rocket.adxl375_accel, self.t)
+        bmm_m      = _nearest_reading(rocket.bmm150_mag, self.t)
+        rm_m       = _nearest_reading(rocket.rm3100_mag, self.t)
+        bmp390_b   = _nearest_reading(rocket.bmp390_baro, self.t)
+        bmp581_b   = _nearest_reading(rocket.bmp581_baro, self.t)
+        max_gnss   = _nearest_reading(rocket.max_f10s_gnss, self.t)
+        truth_a    = _nearest_reading(rocket.truth_accel, self.t)
+        truth_g    = _nearest_reading(rocket.truth_gyro, self.t)
+        truth_b    = _nearest_reading(rocket.truth_baro, self.t)
+        truth_m    = _nearest_reading(rocket.truth_mag, self.t)
+        truth_gnss = _nearest_reading(rocket.truth_gnss, self.t)
 
         def vec3(row):
             if row is None:

@@ -2,9 +2,8 @@ from framework.core.SITL_handle import SITLHandle
 ## ------------------------------------------
 ## Entry point to the user-defined environment simulation.
 ## ------------------------------------------
-from .models.rockets.magnetar import MagnetarRocket
-
-rocket = MagnetarRocket()
+from .models.magnetar.magnetar_model import MagnetarModel
+magnetar = MagnetarModel()
 
 # log sim truth
 truth_log = open("truth_log.csv", "w")
@@ -12,14 +11,14 @@ truth_log.write("time,altitude\n")
 
 def SITL_setup(sitl: SITLHandle):
   '''Called before starting simulation. Use this to schedule events.'''
-  pass
+  print("\nSTATUS: Running SITL simulation...")
 
 def SITL_physicsUpdate(sitl: SITLHandle, t: float, dt: float):
   '''Called at each time step. Use this to integrate models forward in time.'''
-  rocket.update(t)
+  magnetar.update(t)
   
   # write to truth_log
-  altitude = rocket.test_flight.z(t)
+  altitude = magnetar.flight.z(t)
   truth_log.write(f"{t},{altitude}\n")
 
 def SITL_controlUpdate(sitl: SITLHandle, control_msg: dict):
@@ -33,11 +32,12 @@ def SITL_controlUpdate(sitl: SITLHandle, control_msg: dict):
 def SITL_createSensorData(sitl: SITLHandle) -> dict:
   '''Must return sensor data to be parsed by the simulated flight computer.
     Returned dict structure is defined here and utilized by flight_main.cpp.'''
-  return rocket.measure()
+  return magnetar.measure()
 
 def SITL_finish(sitl: SITLHandle):
   '''Called immediately before stopping the simulation.'''
+  print("STATUS: Finished SITL simulation.")
   
+  magnetar.flight.altitude()
   # close truth_log
-  truth_log.close() 
-  pass
+  truth_log.close()

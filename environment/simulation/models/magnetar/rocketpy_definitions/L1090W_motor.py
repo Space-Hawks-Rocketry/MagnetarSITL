@@ -1,4 +1,3 @@
-
 from rocketpy import SolidMotor
 
 # Hand-built thrust curve matching published stats (see module docstring):
